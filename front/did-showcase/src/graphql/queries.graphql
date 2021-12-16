@@ -1,0 +1,109 @@
+query MySome($some: String!) {
+    echo(text: $some)
+}
+
+query WhoAmI {
+    whoami {
+        did
+    }
+}
+
+query CurrentSession {
+    currentSession{
+        id
+    }
+}
+
+query Services ($vcTemplateId: Int) {
+    services (filter: {vcTemplateId: $vcTemplateId}) {
+        id
+        name
+        description
+        logoUrl
+        pros
+        vcTemplates {
+            id
+            title
+            vc {
+                id
+                value
+            }
+        }
+    }
+}
+
+query Service ($id: Int!) {
+    service (id: $id) {
+        id
+        name
+        description
+        logoUrl
+        pros
+        vcTemplates {
+            id
+            type
+            title
+            vc {
+                id
+                value
+            }
+        }
+    }
+}
+
+query VcTemplate ($id: Int!) {
+    vcTemplate(id: $id) {
+        id
+        type
+        title
+        description
+        issuer
+        vc {
+            id
+            value
+        }
+    }
+}
+
+query VcTemplateSections {
+    vcTemplateSections {
+        id
+        title
+        vcTemplates {
+            id
+            title
+            vc {
+                id
+            }
+        }
+    }
+}
+
+mutation Logout ($sessionIds: [Int!]) {
+    logout(sessionIds: $sessionIds)
+}
+
+mutation LoginGenerate ($did: String!) {
+    loginGenerate(did: $did)
+}
+
+mutation LoginVerify($did: String!, $signedMessage: String!) {
+    loginVerify(did: $did, signatureHex: $signedMessage) {
+        token
+        account {
+            id
+            did
+        }
+    }
+}
+
+mutation VcCreateProofOfTonAddressGenerate {
+    vcCreateProofOfTonAddressGenerate
+}
+
+mutation VcCreateProofOfTonAddressVerify($signatureHex: String!, $walletAddress: String!) {
+    vcCreateProofOfTonAddressVerify(signatureHex: $signatureHex, walletAddress: $walletAddress) {
+        id
+        value
+    }
+}

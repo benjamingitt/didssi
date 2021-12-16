@@ -1,0 +1,203 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+directive @cost(complexity: CostComplexity, multipliers: [String], useMultipliers: Boolean) on FIELD_DEFINITION | OBJECT
+
+"""Account (one DID = one account)"""
+type Account implements Node {
+  createdAt: Date!
+  """Decentralized ID, ex.: 978cae5ccb0048de4bf6c76ffba5c2686987fd72494137de8373a84e5f720063"""
+  did: String!
+  id: Int!
+  sessions: [AccountSession!]
+  status: AccountStatus!
+  updatedAt: Date!
+}
+
+"""Account session for authenticate user"""
+type AccountSession implements Node {
+  account: Account!
+  address: String
+  createdAt: Date!
+  expiresAt: Date!
+  id: Int!
+  ipAddr: String!
+  updatedAt: Date!
+  userAgent: UserAgent
+}
+
+enum AccountStatus {
+  ACTIVE
+  DISABLED
+}
+
+type AuthResult {
+  account: Account!
+  token: String!
+}
+
+input CostComplexity {
+  max: Int
+  min: Int = 1
+}
+
+scalar Date
+
+type GenerateEmailCodeResult {
+  expiresAt: Date!
+  result: Boolean!
+}
+
+scalar Json
+
+type Mutation {
+  """Just test backend available. Return provided text"""
+  echo(text: String!): String!
+  """Generate data to sign"""
+  loginGenerate(
+    """Decentralized ID, ex.: 978cae5ccb0048de4bf6c76ffba5c2686987fd72494137de8373a84e5f720063"""
+    did: String!
+  ): String!
+  """Auth method. Request for verify signed data"""
+  loginVerify(
+    """Decentralized ID, ex.: 978cae5ccb0048de4bf6c76ffba5c2686987fd72494137de8373a84e5f720063"""
+    did: String!
+    """Signed data by user's account"""
+    signatureHex: String!
+  ): AuthResult!
+  """Logout. Required providing actual token in headers"""
+  logout(
+    """List of sessions id. Don't pass for logout all sessions."""
+    sessionIds: [Int!]
+  ): Boolean!
+  vcCreateProofOfEthAddress: VC!
+  vcCreateProofOfFunfairAccount: VC!
+  vcCreateProofOfStateId: VC!
+  vcCreateProofOfTaxResidency: VC!
+  """Request for generate one-time message to sign by user's wallet"""
+  vcCreateProofOfTonAddressGenerate: String!
+  """Check user's wallet signature and create Verifiable Claim in success case"""
+  vcCreateProofOfTonAddressVerify(
+    """Signed data"""
+    signatureHex: String!
+    """Wallet address user's account"""
+    walletAddress: String!
+  ): VC!
+  vcCreateProofOfTwitterAccount: VC!
+  vcCreateProofOfUniswapAccount: VC!
+}
+
+"""Abstract declaration of every database object"""
+interface Node {
+  createdAt: Date!
+  id: Int!
+  updatedAt: Date!
+}
+
+type Query {
+  """Request for getting account session info by provided token in headers"""
+  currentSession: AccountSession!
+  """Just test backend available. Return provided text"""
+  echo(text: String!): String!
+  """Get service by id"""
+  service(id: Int!): Service!
+  """Get services ex.: TON Swap"""
+  services(filter: ServicesFilter): [Service!]
+  """Get Verifiable Claim template by id"""
+  vcTemplate(id: Int!): VCTemplate!
+  """Get Verifiable Claims template sections"""
+  vcTemplateSections: [VCTemplateSection!]
+  version: String
+  """Request for getting account info by provided token in headers"""
+  whoami: Account!
+}
+
+"""Service that uses verifiable representation, ex.: TON Swap"""
+type Service implements Node {
+  createdAt: Date!
+  description: String!
+  id: Int!
+  logoUrl: String!
+  name: String!
+  pros: String!
+  updatedAt: Date!
+  vcTemplates: [VCTemplate!]
+}
+
+input ServicesFilter {
+  vcTemplateId: Int
+}
+
+type UserAgent {
+  browser: UserAgentBrowser
+  cpu: UserAgentCpu
+  engine: UserAgentEngine
+  os: UserAgentOs
+  ua: String
+}
+
+type UserAgentBrowser {
+  major: String
+  name: String
+  version: String
+}
+
+type UserAgentCpu {
+  architecture: String
+}
+
+type UserAgentEngine {
+  name: String
+  version: String
+}
+
+type UserAgentOs {
+  name: String
+  version: String
+}
+
+"""Verifiable Claim"""
+type VC implements Node {
+  createdAt: Date!
+  id: Int!
+  owner: Account!
+  updatedAt: Date!
+  value: Json!
+  vcTemplate: VCTemplate!
+}
+
+"""Verifiable Claim Template, ex.: PROOF_OF_TON_ADDRESS"""
+type VCTemplate implements Node {
+  createdAt: Date!
+  description: String!
+  id: Int!
+  issuer: String!
+  sections: [VCTemplateSection!]
+  services: [Service!]
+  title: String!
+  type: String!
+  updatedAt: Date!
+  vc: VC
+}
+
+"""Verifiable Claim Template section, that can contain many templates inside"""
+type VCTemplateSection implements Node {
+  createdAt: Date!
+  id: Int!
+  title: String!
+  updatedAt: Date!
+  vcTemplates: [VCTemplate!]
+}
+
+"""Verifiable Claim template variants"""
+enum VCTemplateType {
+  PROOF_OF_ETH_ADDRESS
+  PROOF_OF_FUNFAIR_ACCOUNT
+  PROOF_OF_STATE_ID
+  PROOF_OF_TAX_RESIDENCY
+  PROOF_OF_TON_ADDRESS
+  PROOF_OF_TWITTER_ACCOUNT
+  PROOF_OF_UNISWAP_ACCOUNT
+}

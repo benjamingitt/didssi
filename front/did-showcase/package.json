@@ -1,0 +1,77 @@
+{
+    "name": "free-ton-id-app",
+    "version": "0.1.1",
+    "private": true,
+    "dependencies": {
+        "@apollo/client": "^3.4.15",
+        "@reduxjs/toolkit": "^1.6.1",
+        "@testing-library/jest-dom": "^5.14.1",
+        "@testing-library/react": "^12.1.1",
+        "@testing-library/user-event": "^13.2.1",
+        "@tonclient/core": "^1.22.0",
+        "@tonclient/lib-web": "^1.22.0",
+        "@types/jest": "^27.0.2",
+        "@types/node": "^16.10.1",
+        "@types/react": "^17.0.24",
+        "@types/react-dom": "^17.0.9",
+        "dotenv": "^10.0.0",
+        "graphql": "^15.6.0",
+        "js-sha256": "^0.9.0",
+        "npm-check-updates": "^11.8.5",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-redux": "^7.2.5",
+        "react-router-dom": "^5.3.0",
+        "react-scripts": "4.0.3",
+        "redux": "^4.1.1",
+        "styled-components": "^5.3.1",
+        "ton-inpage-provider": "^0.1.25",
+        "typescript": "^4.4.3",
+        "web-vitals": "^2.1.0"
+    },
+    "devDependencies": {
+        "@graphql-codegen/add": "^3.1.0",
+        "@graphql-codegen/cli": "2.2.0",
+        "@graphql-codegen/schema-ast": "^2.2.0",
+        "@graphql-codegen/typescript": "2.2.2",
+        "@graphql-codegen/typescript-operations": "2.1.4",
+        "@graphql-codegen/typescript-react-apollo": "3.1.4",
+        "@jetbrains/eslint-config": "^5.3.1",
+        "@typescript-eslint/eslint-plugin": "^4.32.0",
+        "@typescript-eslint/parser": "^4.32.0",
+        "eslint": "^7.32.0",
+        "eslint-plugin-react": "^7.26.0",
+        "eslint-plugin-sonarjs": "^0.10.0",
+        "local-web-server": "^5.1.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "serve": "cd build && npx ws --spa index.html -p 7333 -z",
+        "ts:check": "tsc --noEmit",
+        "check": "npm run ts:check && npm run lint",
+        "lint": "./node_modules/.bin/eslint . --fix",
+        "update": "npx ncu -u",
+        "gen": "graphql-codegen --require dotenv/config --config codegen.yml"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}

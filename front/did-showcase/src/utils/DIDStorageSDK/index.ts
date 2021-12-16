@@ -11,7 +11,7 @@ function hexToDec(data: string): string {
     const bn = BigInt(`0x${hex}`);
 
     return bn.toString(10);
-} 
+}
 
 export class DIDStorage {
     ton: ProviderRpcClient;
